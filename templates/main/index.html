@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> Отображение фотографий </title>
+</head>
+<body>
+    <h1> Список с возможными категориями </h1>
+    <button onclick="openRequestUrl()">Открыть ссылку</button>
+    <ul>
+        {% if categories %}
+        {% for i in categories %}
+        <li>{{ i }}</li>
+        {% endfor %}
+        {% endif %}
+    </ul>
+
+</body>
+<script>
+   function buildRequestUrl() {
+    // Получаем список категорий из DOM
+    var categoryList = document.querySelectorAll('ul li');
+    var categories = Array.from(categoryList).map(function(li) {
+        return li.textContent;
+    });
+
+    // Выбираем 3-4 случайные категории
+    var selectedCategories = [];
+    var numCategories = Math.floor(Math.random() * 2) + 3; // 3-4 категории
+    for (var i = 0; i < numCategories; i++) {
+        var randomIndex = Math.floor(Math.random() * categories.length);
+        selectedCategories.push(categories[randomIndex]);
+    }
+
+    // Формируем URL с параметрами категорий
+    var baseUrl = 'http://localhost:8000/getPicture/';
+    var queryParams = selectedCategories.map(function(category) {
+        return 'category[]=' + encodeURIComponent(category);
+    }).join('&');
+
+    var requestUrl = baseUrl + '?' + queryParams;
+    return requestUrl;
+}
+
+
+
+    function openRequestUrl() {
+    var url = buildRequestUrl();
+    window.open(url, '_blank'); // Открываем ссылку в новой вкладке
+}
+
+</script>
+</html>
